@@ -33,7 +33,10 @@ mongoose.connect(keys.mongoURI,
 const app  = express();
 
 //Handlebars middleware
-app.engine('handlebars', exphbs )
+app.engine('handlebars', exphbs({
+	defaultLayout:'main'
+}));
+app.set('view engine', 'handlebars')
 
 
 //Session and Cookie parser middle ware
