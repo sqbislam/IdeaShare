@@ -4,12 +4,14 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const exphbs = require('express-handlebars')
+
+
 //Load routes
 const auth = require('./routes/auth');
 const index = require('./routes/index');
 //Load keys.js
 const keys = require('./config/keys');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000; //Set port to local or heroku as required
 
 //Load user model
 require('./models/User')
@@ -29,6 +31,9 @@ mongoose.connect(keys.mongoURI,
 
 //init express app
 const app  = express();
+
+//Handlebars middleware
+app.engine('handlebars', exphbs )
 
 
 //Session and Cookie parser middle ware

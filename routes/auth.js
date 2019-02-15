@@ -15,10 +15,13 @@ router.get('/google/callback',
 router.get('/verify', (req, res) =>{
 	if(req.user){
 		console.log(req.user)
+		res.send('Authorized')
 	}
 	else{
+		res.send('Not Authorized')
 		console.log('Not Auth')
 	}
+
 });
 
 router.get('/logout', (req, res) =>{
