@@ -1,22 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const path = require('path')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const exphbs = require('express-handlebars')
+const bodyParser = require('body-parser')
 
 
-//Load routes
-const auth = require('./routes/auth');
-const index = require('./routes/index');
+//Load user model
+require('./models/User')
+require('./models/Idea')
+
 //Load keys.js
 const keys = require('./config/keys');
 const port = process.env.PORT || 5000; //Set port to local or heroku as required
 
-//Load user model
-require('./models/User')
+
 //Passport config
 require('./config/passport')(passport)
+
 
 //Mongoose connect
 
@@ -29,8 +32,19 @@ mongoose.connect(keys.mongoURI,
 	.catch((err) => console.log(err) )
 
 
+
+//Load routes
+const auth = require('./routes/auth');
+const index = require('./routes/index');
+const ideas = require('./routes/ideas')
+
 //init express app
 const app  = express();
+
+//Body Parser middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+ 
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({
@@ -58,12 +72,15 @@ app.use((req, res, next) => {
 })
 
 
+//Set static path
+app.use(express.static(path.join(__dirname, 'public')))
 
 //Anything that goes to /auth will go to auth route
 app.use('/auth', auth);
-//Anything that goes to /auth will go to auth route
+//Anything that goes to / will go to index route
 app.use('/', index);
-
+//Anything that goes to /stories will go to stoies route
+app.use('/ideas', ideas);
 
 
 app.listen(port, ()=> {

@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 
 //Create User Schema
 
-const UserSchema = new Schema({
-	
-	googleID: { type: String, 
+const UserSchema = new Schema({	
+	googleID: { 
+		type: String, 
 		required: true
 	},
 	email: {
@@ -22,7 +22,6 @@ const UserSchema = new Schema({
 	image:{
 		type: String
 	}
-
 });
 
 //Create Collection and add Schema
