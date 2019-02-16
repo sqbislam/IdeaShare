@@ -7,16 +7,31 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Idea = mongoose.model('ideas');
 
-router.get('/', (req, res) => {
-	
-	res.render('ideas/index');
 
+//Show Single idea route
+router.get('/show/:id', (req, res) =>{
+
+	Idea.findOne({_id: req.params.id })
+	.populate('user')
+	.then(idea =>{
+		res.render('ideas/show', {ideas: idea});
+	});
+});
+
+
+
+
+//Public ideas route
+router.get('/', (req, res) => {
+	Idea.find({status: 'public'})
+	.populate('user')
+	.then(idea => {
+		res.render('ideas/index', {ideas: idea});
+	});
 });
 
 router.get('/add',ensureAuthenticated, (req, res) => {
-
 	res.render('ideas/add');
-
 });
 
 
@@ -42,7 +57,7 @@ router.post('/', (req, res) => {
 	new Idea(newIdea)
 	.save()
 	.then(idea => {
-		res.redirect(`/ideas/show/${idea_id}`)
+		res.redirect(`/ideas/show/${idea.id}`)
 	})
 });
 

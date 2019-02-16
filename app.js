@@ -16,6 +16,8 @@ require('./models/Idea')
 const keys = require('./config/keys');
 const port = process.env.PORT || 5000; //Set port to local or heroku as required
 
+//Handlebar helpers
+const {truncate, stripTags, formatDate} = require('./helper/hbs') 
 
 //Passport config
 require('./config/passport')(passport)
@@ -48,6 +50,11 @@ app.use(bodyParser.json())
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({
+	helpers: {
+		truncate: truncate,
+		stripTags: stripTags,
+		formatDate: formatDate
+	},
 	defaultLayout:'main'
 }));
 app.set('view engine', 'handlebars')
