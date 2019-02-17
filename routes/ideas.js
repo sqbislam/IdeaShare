@@ -13,8 +13,23 @@ router.get('/show/:id', (req, res) =>{
 
 	Idea.findOne({_id: req.params.id })
 	.populate('user')
+	.populate('comments.commentUser')
 	.then(idea =>{
+		if(idea.status === 'public'){
 		res.render('ideas/show', {ideas: idea});
+		}
+		else{
+			if(req.user){
+				if(req.user.id == idea.user.id){
+					res.render('ideas/show', {ideas: idea});
+				}
+				else{
+					res.redirect('/ideas')
+				}
+			}else{
+				res.redirect('/ideas')
+			}
+		}
 	});
 });
 
@@ -25,6 +40,7 @@ router.get('/show/:id', (req, res) =>{
 router.get('/', (req, res) => {
 	Idea.find({status: 'public'})
 	.populate('user')
+	.sort({date:'desc'})
 	.then(idea => {
 		res.render('ideas/index', {ideas: idea});
 	});
@@ -41,15 +57,40 @@ router.get('/edit/:id',ensureAuthenticated, (req , res) => {
 	Idea.findOne({_id: req.params.id })
 	.populate('user')
 	.then(idea =>{
+
+		if(idea.user.id == req.user.id){
 		res.render('ideas/edit', {
 			idea:idea
 		});
+		
+		}
+		else{
+			res.render('/')
+		}
+
 	});
 
 });
 
+//More stories from single user
+router.get('/user/:userId', (req, res) => {
+	Idea.find({user: req.params.userId, status: 'public'})
+	.populate('user')
+	.then(idea => {
+		res.render('ideas/index', {ideas: idea})
+	})
+} )
 
+//logged in user stories
+//More stories from single user
+router.get('/my',ensureAuthenticated , (req, res) => {
 
+	Idea.find({user: req.user.id})
+	.populate('user')
+	.then(idea => {
+		res.render('ideas/index', {ideas: idea})
+	})
+} )
 
 //Process adding ideas
 router.post('/', (req, res) => {
@@ -106,11 +147,33 @@ router.put('/:id', ensureAuthenticated, (req, res) => {
 
 
 //DELETE request handling
-router.delete('/:id', ensureAuthenticated, (req, res) =>{
+router.delete('/:id', ensureAuthenticated, (req, res) => {
 	Idea.remove({_id: req.params.id})
 	.then(idea => {
 		res.redirect('/dashboard')
 	});
 });
+
+//Handle comment req to submit
+router.post('/comment/:id', ensureAuthenticated, (req, res) => {
+
+	Idea.findOne({_id: req.params.id })
+	.then(idea => {
+
+		const newComment = {
+			commentBody: req.body.commentBody,
+			commentUser: req.user.id
+		}
+
+		//Push to comments array
+		idea.comments.unshift(newComment);
+
+			idea.save()
+			.then(idea => {
+				res.redirect(`/ideas/show/${idea.id}`)
+			})
+	})
+
+})
 
 module.exports = router;

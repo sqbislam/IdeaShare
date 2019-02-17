@@ -17,7 +17,7 @@ const keys = require('./config/keys');
 const port = process.env.PORT || 5000; //Set port to local or heroku as required
 
 //Handlebar helpers
-const {truncate, stripTags, formatDate, selects} = require('./helper/hbs') 
+const {truncate, stripTags, formatDate, selects, editIcon} = require('./helper/hbs') 
 
 //Passport config
 require('./config/passport')(passport)
@@ -57,7 +57,8 @@ app.engine('handlebars', exphbs({
 		truncate: truncate,
 		stripTags: stripTags,
 		formatDate: formatDate,
-		selects: selects
+		selects: selects,
+		editIcon: editIcon
 	},
 	defaultLayout:'main'
 }));
