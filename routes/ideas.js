@@ -30,9 +30,24 @@ router.get('/', (req, res) => {
 	});
 });
 
+//Add form
 router.get('/add',ensureAuthenticated, (req, res) => {
 	res.render('ideas/add');
 });
+
+//Edit form
+router.get('/edit/:id',ensureAuthenticated, (req , res) => {
+	
+	Idea.findOne({_id: req.params.id })
+	.populate('user')
+	.then(idea =>{
+		res.render('ideas/edit', {
+			idea:idea
+		});
+	});
+
+});
+
 
 
 
@@ -62,5 +77,40 @@ router.post('/', (req, res) => {
 });
 
 
+//EDIT form PUT request handling
+
+router.put('/:id', ensureAuthenticated, (req, res) => {
+
+	Idea.findOne({_id: req.params.id })
+	.then(idea =>{
+		let allowComments
+		if(req.body.allowComments){
+			allowComments = true;
+		}else{
+			allowComments = false;
+		}
+
+		//New values
+		idea.title = req.body.title
+		idea.body = req.body.body;
+		idea.status = req.body.status;
+		idea.allowComments = allowComments;
+
+		idea.save()
+			.then(idea => {
+				res.redirect('/dashboard')
+			})
+
+	});
+} )
+
+
+//DELETE request handling
+router.delete('/:id', ensureAuthenticated, (req, res) =>{
+	Idea.remove({_id: req.params.id})
+	.then(idea => {
+		res.redirect('/dashboard')
+	});
+});
 
 module.exports = router;
