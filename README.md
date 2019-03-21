@@ -13,5 +13,5 @@
 
 > More Functionalities coming soon...
 
-[Prototype Deployed v1](https://gentle-ravine-20974.herokuapp.com/)
+[Prototype Deployed v1, CHECK IT OUT HERE](https://gentle-ravine-20974.herokuapp.com/)
 
