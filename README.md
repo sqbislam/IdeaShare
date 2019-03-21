@@ -1,4 +1,17 @@
 # IdeaShare
-App to share Ideas public or private
+## Full Stack Online Application to Share Ideas
 
-This is an online platform for Sharing ideas of any topic.
+#### Implemented with Express, MongoDB, Node.js
+#### Supports Google Authentication
+
+**Platform for safe-keeping or sharing ideas.**
+
+- Easy registration using Google account
+- Simple interface
+- Access Control (Public or Private)
+- Secured
+
+> More Functionalities coming soon...
+
+[Prototype Deployed v1](https://gentle-ravine-20974.herokuapp.com/)
+
